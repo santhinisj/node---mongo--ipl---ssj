@@ -1,10 +1,12 @@
 /*jshint esversion:6 */
-const MongoClient = require("mongodb").MongoClient;
+// const MongoClient = require("mongodb").MongoClient;
+// const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectID } = require('mongodb');
+var obj = new ObjectID();
+console.log(obj);
 
 
-var user = { name: 'santhi', location: 'tvpm' };
-var { name } = user;
-console.log(name);
+
 
 MongoClient.connect('mongodb://localhost:27017/ipldataset', (err, client) => {
     if (err) {
