@@ -9,11 +9,8 @@ MongoClient.connect('mongodb://localhost:27017', (err, client) => {
     const db = client.db('ipldataset');
     console.log('Connected to mongodb database');
 
-    db.collection('Users').find({
-        _id: new ObjectID("5b459b6d9665cbba6181eea9")
-    }).toArray().then((docs) => {
-        console.log(JSON.stringify(docs, undefined, 2));
-        console.log("User Data");
+    db.collection('Users').find().count().then((count) => {
+        console.log(`User Data count: ${count}`);
     }), (err) => {
         console.log('Unable to fetch data', err);
     };
