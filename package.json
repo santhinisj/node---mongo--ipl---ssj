@@ -1,0 +1,22 @@
+{
+  "name": "nodemongo",
+  "version": "1.0.0",
+  "description": "Node app implementation with MongoDB in the backend.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/santhinisjr/node---mongo--ipl---ssj.git"
+  },
+  "author": "Santhini Sasidharan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/santhinisjr/node---mongo--ipl---ssj/issues"
+  },
+  "homepage": "https://github.com/santhinisjr/node---mongo--ipl---ssj#readme",
+  "dependencies": {
+    "mongodb": "^2.2.35"
+  }
+}
