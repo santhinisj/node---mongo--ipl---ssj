@@ -22,6 +22,17 @@ MongoClient.connect('mongodb://localhost:27017/ipldataset', (err, client) => {
 
     });
 
+    // create new collection - user - name, age , location
+    db.collection('Users').insertOne({
+        name: 'santhi',
+        age: '5',
+        location: 'kerala'
+    }, (err, result) => {
+        if (err) {
+            return console.log("Unable to connect");
+        }
+        console.log(JSON.stringify(result.ops[0]._id.getTimestamp()), undefined, 2);
+    });
 
     client.close();
 });
