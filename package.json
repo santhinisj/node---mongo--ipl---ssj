@@ -22,5 +22,9 @@
         "mongodb": "^2.2.35",
         "nodemon": "^1.18.1",
         "save": "^2.3.2"
+    },
+    "devDependencies": {
+        "chai": "^4.1.2",
+        "mocha": "^5.2.0"
     }
 }
