@@ -1,31 +1,41 @@
 /* jshint esversion:6 */
-const path = require('path');
-let mongoapi = require(path.resolve('mongoStuff/mongodb-connect'));
 
-
+const connectToMongo = () => {
+    return new Promise((resolve, reject) => {
+        const { MongoClient, ObjectID } = require('mongodb');
+        const url = 'mongodb://localhost:27017';
+        MongoClient.connect(url, (err, client) => {
+            if (err) {
+                return console.log("Connection to MongoDB server refused");
+            }
+            //reference for ipldataset DB.
+            db = client.db('ipldataset');
+            console.log('Connected to mongodb database');
+            resolve(db);
+        });
+    });
+};
 const matchesPerYear = (dataset) => {
     return new Promise((resolve, reject) => {
-        mongoapi.connectToMongo().then((db) => {
+        connectToMongo().then((db) => {
             db.collection(dataset).aggregate([{
                 $group: {
                     _id: "$season",
                     count: { $sum: 1 }
                 }
             }]).toArray().then((docs) => {
-                // console.log(docs);
                 resolve(docs);
-                console.log("matchesperyear");
-
             }), (err) => {
                 console.log("cannot fetch data", err);
-            }
+            };
         });
     });
+
 };
 
 const winnersPerYear = (dataset) => {
     return new Promise((resolve, reject) => {
-        mongoapi.connectToMongo().then((db) => {
+        connectToMongo().then((db) => {
             db.collection(dataset).aggregate([{
                     $group: {
                         _id: {
@@ -34,6 +44,7 @@ const winnersPerYear = (dataset) => {
                         },
                         count: { $sum: 1 },
                     }
+
                 },
                 {
                     $group: {
@@ -43,42 +54,38 @@ const winnersPerYear = (dataset) => {
                                 years: '$_id.year_id',
                                 count: '$count'
                             }
+
                         }
+
                     }
                 },
-                { $unwind: '$values' },
-                {
-                    $group: {
-                        _id: '$_id',
-                        values: { $push: { year: '$values.years', count: '$values.count' } }
-
-                    }
-                }
+                { $unwind: '$values' }
 
             ]).toArray().then((docs) => {
-                resolve(docs);
-                console.log('winnersPerYear');
+                console.log(docs);
+                process.exit(0);
+
             }), (err) => {
                 console.log("cannot fetch data", err);
-                // process.exit(0);
+                process.exit(0);
             };
         });
     });
 
 };
+// winnersPerYear('matches')
 
-
-const extraRunsPerTeam = (dataset1, dataset2, year) => {
+const extraRunsPerTeam = () => {
     return new Promise((resolve, reject) => {
-        mongoapi.connectToMongo().then((db) => {
-            db.collection(dataset1).aggregate([{
+        connectToMongo().then((db) => {
+            db.collection('matches').aggregate([{
                     $match: {
-                        season: year
+                        season: 2016
                     }
                 },
                 {
                     $lookup: {
-                        from: dataset2,
+                        from: 'deliveries',
                         localField: 'id',
                         foreignField: 'match_id',
                         as: 'details'
@@ -102,25 +109,29 @@ const extraRunsPerTeam = (dataset1, dataset2, year) => {
 
             ]).toArray().then((docs) => {
                 resolve(docs);
-                console.log("extrarunsperyear");
+                console.log(docs);
+                process.exit(0);
+
             }), (err) => {
                 console.log("cannot fetch data", err);
             };
 
         });
     });
+
+
 };
+// extraRunsPerTeam();
 
-
-const topEconomicalBowlers = (dataset1, dataset2, year) => {
+const topEconomicalBowlers = () => {
     return new Promise((resolve, reject) => {
-        mongoapi.connectToMongo().then((db) => {
-            db.collection(dataset1).aggregate([{
-                    $match: { season: year }
+        connectToMongo().then((db) => {
+            db.collection('matches').aggregate([{
+                    $match: { season: 2015 }
                 },
                 {
                     $lookup: {
-                        from: dataset2,
+                        from: 'deliveries',
                         localField: 'id',
                         foreignField: 'match_id',
                         as: 'details'
@@ -156,11 +167,12 @@ const topEconomicalBowlers = (dataset1, dataset2, year) => {
 
             ]).toArray().then((docs) => {
                 resolve(docs);
-                console.log("top economical bowlers");
+                console.log(docs);
+                process.exit(0);
 
             }), (err) => {
                 console.log("cannot fetch data", err);
-                // process.exit(0);
+                process.exit(0);
             };
 
         });
@@ -169,15 +181,15 @@ const topEconomicalBowlers = (dataset1, dataset2, year) => {
 
 // topEconomicalBowlers();
 
-const battingAverages = (dataset1, dataset2, year) => {
+const battingAverage = (dataset1, dataset2, year) => {
     return new Promise((resolve, reject) => {
-        mongoapi.connectToMongo().then((db) => {
+        connectToMongo().then((db) => {
             db.collection(dataset1).aggregate([{
-                    $match: { season: year }
+                    $match: { season: 2016 }
                 },
                 {
                     $lookup: {
-                        from: dataset2,
+                        from: 'deliveries',
                         localField: 'id',
                         foreignField: 'match_id',
                         as: 'details'
@@ -197,27 +209,26 @@ const battingAverages = (dataset1, dataset2, year) => {
                 {
                     $project: {
                         _id: '$_id',
-                        avg: { $cond: { if: { $ne: ["$player_dismissed", 0] }, then: { $divide: ['$runs', '$player_dismissed'] }, else: 0 } }
+                        avg: { $cond: { if: { $ne: ["$player_dismissed", 0] }, then: { $divide: ['$runs', '$player_dismissed'] }, else: 'NA' } }
                     }
                 },
-                { $sort: { avg: -1 } },
-                { $limit: 10 }
-
+                { $sort: { avg: -1 } }
             ]).toArray().then((docs) => {
                 resolve(docs);
-                console.log("batting averages");
+                console.log(docs);
+                process.exit(0);
+
             }), (err) => {
                 console.log("cannot fetch data", err);
-                // process.exit(0);
+                process.exit(0);
             };
         });
     });
 };
-// extraRunsPerTeam('matches', 'deliveries', 2016);
+battingAverage('matches', 'deliveries', 2016);
+
+// matchesPerYear('matches');
+
 module.exports = {
-    matchesPerYear,
-    winnersPerYear,
-    extraRunsPerTeam,
-    topEconomicalBowlers,
-    battingAverages
+    matchesPerYear
 };
