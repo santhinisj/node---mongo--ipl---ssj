@@ -26,6 +26,7 @@ window.chart = new Highcharts.Chart({
     },
     series: [{
         "colorByPoint": true,
+        name: 'Matches',
         "data": matchesPerYear.map(a => a.count)
     }]
 });

@@ -28,7 +28,7 @@ window.chart = new Highcharts.Chart({
         data: economyRate
     },
     series: [{
-        text: 'Year',
+        name: 'Economy Rate',
         data: economyRate
     }]
 });

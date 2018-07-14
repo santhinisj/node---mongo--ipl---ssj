@@ -32,7 +32,7 @@ window.chart = new Highcharts.Chart({
         data: runs
     },
     series: [{
-        text: 'Year',
+        name: 'Extra runs',
         data: runs
     }]
 });

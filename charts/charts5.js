@@ -37,6 +37,7 @@ window.chart = new Highcharts.Chart({
     },
     series: [{
         "colorByPoint": true,
+        name: 'Batting Average',
         "data": seriesValues
     }]
 });

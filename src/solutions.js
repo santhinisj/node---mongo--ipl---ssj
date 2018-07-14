@@ -1,7 +1,7 @@
 /* jshint esversion:6 */
 const path = require('path');
 let mongoapi = require(path.resolve('mongoStuff/mongodb-connect'));
-
+var round = require('mongo-round');
 
 const matchesPerYear = (dataset) => {
     return new Promise((resolve, reject) => {
@@ -150,6 +150,13 @@ const topEconomicalBowlers = (dataset1, dataset2, year) => {
                             }]
                         }
                     }
+
+                }, {
+                    $project: {
+                        _id: '$_id',
+                        economy: round('$economy', 2)
+                    }
+
                 }, { $sort: { economy: 1 } },
                 { $limit: 10 }
 
@@ -198,6 +205,11 @@ const battingAverages = (dataset1, dataset2, year) => {
                     $project: {
                         _id: '$_id',
                         avg: { $cond: { if: { $ne: ["$player_dismissed", 0] }, then: { $divide: ['$runs', '$player_dismissed'] }, else: 0 } }
+                    }
+                }, {
+                    $project: {
+                        _id: '$_id',
+                        avg: round('$avg', 2)
                     }
                 },
                 { $sort: { avg: -1 } },

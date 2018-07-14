@@ -34,6 +34,10 @@ for (var i = 0; i < teamNames.length; i++) {
         data: data
     });
 }
+let years = [];
+for (year = 2008; year < 2018; year++) {
+    years.push(year);
+}
 // console.log("HERE");
 
 chartSeries.reverse();
@@ -49,7 +53,7 @@ window.chart = new Highcharts.Chart({
         text: 'MATCHES WON BY ALL TEAMS PER YEAR'
     },
     xAxis: {
-        categories: ['2017', '2016', '2015', '2014', '2013', '2012', '2011', '2010', '2009', '2008']
+        categories: years
     },
     yAxis: {
         min: 0,
@@ -57,6 +61,7 @@ window.chart = new Highcharts.Chart({
             text: 'Total matches played'
         }
     },
+
     legend: {
         reversed: true
     },
